@@ -1,20 +1,26 @@
 import React from "react";
-import {addRowActionCreator} from "../redux/table-reducer";
 import SearchComponent from "./SearchComponent";
+import {connect} from "react-redux";
+import {addRowActionCreator, filterTableActionCreator, updateSearchValueActionCreator} from "../../redux/table-reducer";
 
-const Header = (props) => {
-    let addRow = () => {
-        props.dispatch(addRowActionCreator())
+let mapStateToProps = (state) => {
+    return {
+        searchValue: state.searchValue,
+        tableRow: state.tableArea.tableRow
     }
-
-    return (
-        <header className="App-header">
-            <SearchComponent searchValue={props.tableArea.searchValue} dispatch={props.dispatch}/>
-            <div>
-                <button onClick={addRow}>add row</button>
-            </div>
-        </header>
-    )
 }
+
+let mapDispatchToProps = (dispatch) => {
+    return {
+        onSearchChange: (text) => {
+            let action = updateSearchValueActionCreator(text);
+            dispatch(action)
+        },
+        filterTable: () => {dispatch(filterTableActionCreator())},
+        addRow: () => {dispatch(addRowActionCreator())}
+    }
+}
+
+const Header = connect(mapStateToProps, mapDispatchToProps)(SearchComponent)
 
 export default Header;
